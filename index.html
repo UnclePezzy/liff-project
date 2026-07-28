@@ -4,109 +4,669 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>AI Chatbot LIFF</title>
+  <title>My Digital Name Card</title>
 
+  <!-- LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: Arial, sans-serif;
+      background: #f3f6f5;
+      min-height: 100vh;
+      padding: 24px 16px;
+      color: #202124;
+    }
+
+    .container {
+      max-width: 430px;
+      margin: auto;
+    }
+
+    .header {
       text-align: center;
-      padding: 40px 20px;
-      background: #f5f5f5;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 25px;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #777;
     }
 
     .card {
-      max-width: 400px;
-      margin: auto;
       background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+      margin-bottom: 18px;
+    }
+
+    .card-top {
+      background: #06c755;
+      height: 95px;
+    }
+
+    .profile {
+      text-align: center;
+      padding: 0 24px 25px;
     }
 
     #picture {
-      width: 120px;
-      height: 120px;
+      width: 105px;
+      height: 105px;
       border-radius: 50%;
       object-fit: cover;
-      display: none;
-      margin: 20px auto;
+      border: 5px solid white;
+      margin-top: -52px;
+      background: #eee;
+    }
+
+    #name {
+      font-size: 24px;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    .role {
+      color: #06a847;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .description {
+      color: #777;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-top: 15px;
+    }
+
+    .line {
+      height: 1px;
+      background: #eee;
+      margin: 20px 0;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .badge {
+      background: #e8f8ee;
+      color: #068c3d;
+      padding: 7px 11px;
+      border-radius: 20px;
+    }
+
+    .actions {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+    }
+
+    .actions h3 {
+      margin-bottom: 15px;
+      font-size: 18px;
     }
 
     button {
-      padding: 12px 20px;
+      width: 100%;
       border: none;
-      border-radius: 8px;
+      border-radius: 13px;
+      padding: 14px;
+      margin-bottom: 10px;
+      font-size: 15px;
       cursor: pointer;
-      margin-top: 15px;
+      transition: 0.15s;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .send {
+      background: #06c755;
+      color: white;
+    }
+
+    .share {
+      background: #1677ff;
+      color: white;
+    }
+
+    .ai {
+      background: #252525;
+      color: white;
+    }
+
+    .secondary {
+      background: #eef1f3;
+      color: #222;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 80px 20px;
+      color: #666;
+    }
+
+    #content {
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      color: #aaa;
+      font-size: 11px;
+      margin-top: 18px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="card">
-    <h1>AI Chatbot</h1>
-    <p>LIFF Application</p>
+<div class="container">
 
-    <img id="picture">
-
-    <h2 id="name">กำลังโหลด...</h2>
-    <p id="status">กำลังเชื่อมต่อกับ LINE</p>
-
-    <button onclick="closeLiff()">ปิดหน้านี้</button>
+  <div class="header">
+    <h1>👤 Digital Name Card</h1>
+    <p>LINE LIFF Profile</p>
   </div>
 
-  <script>
-    async function main() {
-      try {
+  <div id="loading">
+    กำลังโหลดข้อมูล LINE...
+  </div>
 
-        await liff.init({
-          liffId: "2010870502-mE6kNY1V"
-        });
+  <div id="content">
 
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
-        }
+    <!-- DIGITAL NAME CARD -->
+    <div class="card">
 
-        const profile = await liff.getProfile();
+      <div class="card-top"></div>
 
-        document.getElementById("name").innerText =
-          "สวัสดี " + profile.displayName + " 👋";
+      <div class="profile">
 
-        document.getElementById("status").innerText =
-          "เชื่อมต่อ LINE สำเร็จ";
+        <img id="picture" alt="Profile">
 
-        if (profile.pictureUrl) {
-          const picture = document.getElementById("picture");
-          picture.src = profile.pictureUrl;
-          picture.style.display = "block";
-        }
+        <h2 id="name">LINE User</h2>
 
-      } catch (error) {
+        <div class="role">
+          LINE AI Chatbot Project
+        </div>
 
-        document.getElementById("name").innerText =
-          "เกิดข้อผิดพลาด";
+        <p class="description">
+          🤖 AI Assistant พร้อมตอบคำถามผ่าน LINE<br>
+          💬 พัฒนาโดยใช้ LINE Messaging API, LIFF และ AI
+        </p>
 
-        document.getElementById("status").innerText =
-          error.message;
+        <div class="line"></div>
 
-        console.error(error);
+        <div class="status">
+
+          <span>
+            LINE Account
+          </span>
+
+          <span class="badge" id="environment">
+            Checking...
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+    <div class="actions">
+
+      <h3>เลือกเมนู</h3>
+
+      <button class="send" onclick="sendNameCard()">
+        💬 ส่งนามบัตรลงแชต
+      </button>
+
+      <button class="share" onclick="shareNameCard()">
+        📤 แชร์นามบัตรให้เพื่อน
+      </button>
+
+      <button class="ai" onclick="talkToAI()">
+        🤖 คุยกับ AI Chatbot
+      </button>
+
+      <button class="secondary" onclick="reloadProfile()">
+        🔄 โหลดข้อมูลใหม่
+      </button>
+
+      <button class="secondary" onclick="closeLiff()">
+        ✕ ปิด
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="footer">
+    LINE AI Chatbot & LIFF Project
+  </div>
+
+</div>
+
+
+<script>
+
+  // ==================================================
+  // 1. ใส่ LIFF ID ของคุณตรงนี้
+  // ==================================================
+
+  const LIFF_ID = "2010870502-mE6kNY1V";
+
+
+  let userProfile = null;
+
+
+  // ==================================================
+  // START LIFF
+  // ==================================================
+
+  async function main() {
+
+    try {
+
+      await liff.init({
+        liffId: LIFF_ID
+      });
+
+
+      // ถ้ายังไม่ได้ Login
+      if (!liff.isLoggedIn()) {
+
+        liff.login();
+        return;
+
       }
-    }
 
-    function closeLiff() {
+
+      // ดึงข้อมูล Profile
+      await loadProfile();
+
+
+      // ตรวจสอบว่าเปิดจาก LINE หรือ Browser
       if (liff.isInClient()) {
-        liff.closeWindow();
+
+        document.getElementById("environment").innerText =
+          "✓ เปิดผ่าน LINE";
+
       } else {
-        alert("กรุณาเปิดหน้านี้ผ่าน LINE");
+
+        document.getElementById("environment").innerText =
+          "Browser";
+
       }
+
+
+      document.getElementById("loading").style.display =
+        "none";
+
+      document.getElementById("content").style.display =
+        "block";
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.getElementById("loading").innerHTML =
+        "เกิดข้อผิดพลาด<br><br>" + error.message;
+
     }
 
-    main();
-  </script>
+  }
+
+
+
+  // ==================================================
+  // LOAD PROFILE
+  // ==================================================
+
+  async function loadProfile() {
+
+    userProfile = await liff.getProfile();
+
+
+    document.getElementById("name").innerText =
+      userProfile.displayName;
+
+
+    if (userProfile.pictureUrl) {
+
+      document.getElementById("picture").src =
+        userProfile.pictureUrl;
+
+    }
+
+  }
+
+
+
+  // ==================================================
+  // สร้าง FLEX MESSAGE นามบัตร
+  // ==================================================
+
+  function createNameCard() {
+
+    const name =
+      userProfile?.displayName || "LINE User";
+
+    const picture =
+      userProfile?.pictureUrl ||
+      "https://via.placeholder.com/300";
+
+
+    return {
+
+      type: "flex",
+
+      altText: "Digital Name Card - " + name,
+
+      contents: {
+
+        type: "bubble",
+
+        hero: {
+
+          type: "image",
+
+          url: picture,
+
+          size: "full",
+
+          aspectRatio: "1:1",
+
+          aspectMode: "cover"
+
+        },
+
+        body: {
+
+          type: "box",
+
+          layout: "vertical",
+
+          contents: [
+
+            {
+              type: "text",
+              text: name,
+              weight: "bold",
+              size: "xl",
+              align: "center"
+            },
+
+            {
+              type: "text",
+              text: "LINE AI Chatbot Project",
+              size: "sm",
+              color: "#06C755",
+              align: "center",
+              margin: "sm"
+            },
+
+            {
+              type: "separator",
+              margin: "lg"
+            },
+
+            {
+              type: "text",
+              text: "🤖 AI Assistant",
+              weight: "bold",
+              margin: "lg"
+            },
+
+            {
+              type: "text",
+              text: "สามารถพูดคุยและถามคำถามผ่าน LINE Chatbot ได้",
+              size: "sm",
+              color: "#777777",
+              wrap: true,
+              margin: "sm"
+            },
+
+            {
+              type: "text",
+              text: "พัฒนาด้วย LINE Messaging API, LIFF และ AI",
+              size: "xs",
+              color: "#999999",
+              wrap: true,
+              margin: "md"
+            }
+
+          ]
+
+        }
+
+      }
+
+    };
+
+  }
+
+
+
+  // ==================================================
+  // ส่งนามบัตรเข้า Chat ปัจจุบัน
+  // ==================================================
+
+  async function sendNameCard() {
+
+    if (!liff.isInClient()) {
+
+      alert("กรุณาเปิด LIFF ผ่าน LINE");
+
+      return;
+
+    }
+
+
+    try {
+
+      const card = createNameCard();
+
+
+      await liff.sendMessages([
+        card
+      ]);
+
+
+      alert("ส่งนามบัตรลงแชตแล้ว 🎉");
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "ส่งนามบัตรไม่สำเร็จ\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+
+  // ==================================================
+  // SHARE TARGET PICKER
+  // แชร์ให้เพื่อน / กลุ่ม
+  // ==================================================
+
+  async function shareNameCard() {
+
+    try {
+
+      if (!liff.isApiAvailable("shareTargetPicker")) {
+
+        alert(
+          "อุปกรณ์หรือ LINE เวอร์ชันนี้ไม่รองรับการแชร์"
+        );
+
+        return;
+
+      }
+
+
+      const card = createNameCard();
+
+
+      const result =
+        await liff.shareTargetPicker([
+          card
+        ]);
+
+
+      if (result) {
+
+        alert("แชร์นามบัตรเรียบร้อยแล้ว 🎉");
+
+      }
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "ไม่สามารถแชร์นามบัตรได้\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+
+  // ==================================================
+  // ส่งข้อความหา AI
+  // ==================================================
+
+  async function talkToAI() {
+
+    if (!liff.isInClient()) {
+
+      alert(
+        "กรุณาเปิด LIFF ผ่าน LINE เพื่อใช้ Chatbot"
+      );
+
+      return;
+
+    }
+
+
+    try {
+
+      await liff.sendMessages([
+
+        {
+          type: "text",
+          text: "สวัสดี AI 👋 แนะนำตัวหน่อย"
+        }
+
+      ]);
+
+
+      alert("ส่งข้อความหา AI แล้ว 🤖");
+
+
+      // ปิด LIFF กลับไปดูหน้า Chat
+      setTimeout(function() {
+
+        liff.closeWindow();
+
+      }, 700);
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "ส่งข้อความไม่สำเร็จ\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+
+  // ==================================================
+  // โหลด Profile ใหม่
+  // ==================================================
+
+  async function reloadProfile() {
+
+    try {
+
+      await loadProfile();
+
+      alert("โหลดข้อมูลเรียบร้อยแล้ว");
+
+    } catch (error) {
+
+      alert("โหลดข้อมูลไม่สำเร็จ");
+
+    }
+
+  }
+
+
+
+  // ==================================================
+  // CLOSE
+  // ==================================================
+
+  function closeLiff() {
+
+    if (liff.isInClient()) {
+
+      liff.closeWindow();
+
+    } else {
+
+      alert("กรุณาเปิดผ่าน LINE");
+
+    }
+
+  }
+
+
+
+  // ==================================================
+  // RUN
+  // ==================================================
+
+  main();
+
+</script>
 
 </body>
 </html>
