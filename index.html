@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AI Chatbot LIFF</title>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      background: #f5f5f5;
+    }
+
+    .card {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    #picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: none;
+      margin: 20px auto;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>AI Chatbot</h1>
+    <p>LIFF Application</p>
+
+    <img id="picture">
+
+    <h2 id="name">กำลังโหลด...</h2>
+    <p id="status">กำลังเชื่อมต่อกับ LINE</p>
+
+    <button onclick="closeLiff()">ปิดหน้านี้</button>
+  </div>
+
+  <script>
+    async function main() {
+      try {
+
+        await liff.init({
+          liffId: "ใส่-LIFF-ID-ตรงนี้"
+        });
+
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        const profile = await liff.getProfile();
+
+        document.getElementById("name").innerText =
+          "สวัสดี " + profile.displayName + " 👋";
+
+        document.getElementById("status").innerText =
+          "เชื่อมต่อ LINE สำเร็จ";
+
+        if (profile.pictureUrl) {
+          const picture = document.getElementById("picture");
+          picture.src = profile.pictureUrl;
+          picture.style.display = "block";
+        }
+
+      } catch (error) {
+
+        document.getElementById("name").innerText =
+          "เกิดข้อผิดพลาด";
+
+        document.getElementById("status").innerText =
+          error.message;
+
+        console.error(error);
+      }
+    }
+
+    function closeLiff() {
+      if (liff.isInClient()) {
+        liff.closeWindow();
+      } else {
+        alert("กรุณาเปิดหน้านี้ผ่าน LINE");
+      }
+    }
+
+    main();
+  </script>
+
+</body>
+</html>
