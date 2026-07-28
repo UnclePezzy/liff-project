@@ -517,51 +517,32 @@
   // แชร์ให้เพื่อน / กลุ่ม
   // ==================================================
 
-  async function shareNameCard() {
+async function shareNameCard() {
 
-    try {
+  try {
 
-      if (!liff.isApiAvailable("shareTargetPicker")) {
+    const card = createNameCard();
 
-        alert(
-          "อุปกรณ์หรือ LINE เวอร์ชันนี้ไม่รองรับการแชร์"
-        );
+    const result = await liff.shareTargetPicker([
+      card
+    ]);
 
-        return;
-
-      }
-
-
-      const card = createNameCard();
-
-
-      const result =
-        await liff.shareTargetPicker([
-          card
-        ]);
-
-
-      if (result) {
-
-        alert("แชร์นามบัตรเรียบร้อยแล้ว 🎉");
-
-      }
-
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert(
-        "ไม่สามารถแชร์นามบัตรได้\n" +
-        error.message
-      );
-
+    if (result) {
+      alert("แชร์นามบัตรเรียบร้อยแล้ว 🎉");
     }
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "แชร์ไม่สำเร็จ\n" +
+      (error.message || error)
+    );
 
   }
 
-
+}
 
   // ==================================================
   // ส่งข้อความหา AI
