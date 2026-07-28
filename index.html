@@ -6,7 +6,6 @@
 
   <title>My Digital Name Card</title>
 
-  <!-- LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
@@ -131,7 +130,6 @@
       margin-bottom: 10px;
       font-size: 15px;
       cursor: pointer;
-      transition: 0.15s;
     }
 
     button:active {
@@ -143,13 +141,8 @@
       color: white;
     }
 
-    .share {
+    .copy {
       background: #1677ff;
-      color: white;
-    }
-
-    .ai {
-      background: #252525;
       color: white;
     }
 
@@ -192,7 +185,6 @@
 
   <div id="content">
 
-    <!-- DIGITAL NAME CARD -->
     <div class="card">
 
       <div class="card-top"></div>
@@ -216,9 +208,7 @@
 
         <div class="status">
 
-          <span>
-            LINE Account
-          </span>
+          <span>LINE Account</span>
 
           <span class="badge" id="environment">
             Checking...
@@ -227,25 +217,19 @@
         </div>
 
       </div>
-
     </div>
 
 
-    <!-- ACTIONS -->
     <div class="actions">
 
-      <h3>เลือกเมนู</h3>
+      <h3>นามบัตรของฉัน</h3>
 
       <button class="send" onclick="sendNameCard()">
         💬 ส่งนามบัตรลงแชต
       </button>
 
-      <button class="share" onclick="shareNameCard()">
-        📤 แชร์นามบัตรให้เพื่อน
-      </button>
-
-      <button class="ai" onclick="talkToAI()">
-        🤖 คุยกับ AI Chatbot
+      <button class="copy" onclick="copyNameCardLink()">
+        🔗 คัดลอกลิงก์นามบัตร
       </button>
 
       <button class="secondary" onclick="reloadProfile()">
@@ -260,7 +244,6 @@
 
   </div>
 
-
   <div class="footer">
     LINE AI Chatbot & LIFF Project
   </div>
@@ -270,19 +253,18 @@
 
 <script>
 
-  // ==================================================
-  // 1. ใส่ LIFF ID ของคุณตรงนี้
-  // ==================================================
-
   const LIFF_ID = "2010870502-mE6kNY1V";
 
+  // LIFF URL ของ Digital Name Card
+  const NAME_CARD_URL =
+    "https://liff.line.me/2010870502-mE6kNY1V";
 
   let userProfile = null;
 
 
-  // ==================================================
-  // START LIFF
-  // ==================================================
+  // ========================================
+  // เริ่มต้น LIFF
+  // ========================================
 
   async function main() {
 
@@ -292,8 +274,6 @@
         liffId: LIFF_ID
       });
 
-
-      // ถ้ายังไม่ได้ Login
       if (!liff.isLoggedIn()) {
 
         liff.login();
@@ -301,12 +281,9 @@
 
       }
 
-
-      // ดึงข้อมูล Profile
       await loadProfile();
 
 
-      // ตรวจสอบว่าเปิดจาก LINE หรือ Browser
       if (liff.isInClient()) {
 
         document.getElementById("environment").innerText =
@@ -339,15 +316,13 @@
   }
 
 
-
-  // ==================================================
-  // LOAD PROFILE
-  // ==================================================
+  // ========================================
+  // โหลดข้อมูล Profile
+  // ========================================
 
   async function loadProfile() {
 
     userProfile = await liff.getProfile();
-
 
     document.getElementById("name").innerText =
       userProfile.displayName;
@@ -363,10 +338,9 @@
   }
 
 
-
-  // ==================================================
-  // สร้าง FLEX MESSAGE นามบัตร
-  // ==================================================
+  // ========================================
+  // สร้าง Flex Message นามบัตร
+  // ========================================
 
   function createNameCard() {
 
@@ -391,13 +365,9 @@
         hero: {
 
           type: "image",
-
           url: picture,
-
           size: "full",
-
           aspectRatio: "1:1",
-
           aspectMode: "cover"
 
         },
@@ -405,7 +375,6 @@
         body: {
 
           type: "box",
-
           layout: "vertical",
 
           contents: [
@@ -455,6 +424,24 @@
               color: "#999999",
               wrap: true,
               margin: "md"
+            },
+
+            {
+              type: "separator",
+              margin: "lg"
+            },
+
+            {
+              type: "button",
+              style: "primary",
+              color: "#06C755",
+              margin: "lg",
+
+              action: {
+                type: "uri",
+                label: "เปิด Digital Name Card",
+                uri: NAME_CARD_URL
+              }
             }
 
           ]
@@ -468,17 +455,15 @@
   }
 
 
-
-  // ==================================================
-  // ส่งนามบัตรเข้า Chat ปัจจุบัน
-  // ==================================================
+  // ========================================
+  // ส่งนามบัตรลงห้องแชต
+  // ========================================
 
   async function sendNameCard() {
 
     if (!liff.isInClient()) {
 
       alert("กรุณาเปิด LIFF ผ่าน LINE");
-
       return;
 
     }
@@ -488,13 +473,11 @@
 
       const card = createNameCard();
 
-
       await liff.sendMessages([
         card
       ]);
 
-
-      alert("ส่งนามบัตรลงแชตแล้ว 🎉");
+      alert("ส่งนามบัตรลงแชตเรียบร้อยแล้ว 🎉");
 
 
     } catch (error) {
@@ -511,86 +494,43 @@
   }
 
 
+  // ========================================
+  // คัดลอกลิงก์ Digital Name Card
+  // ========================================
 
-  // ==================================================
-  // SHARE TARGET PICKER
-  // แชร์ให้เพื่อน / กลุ่ม
-  // ==================================================
-
-async function shareNameCard() {
-
-  try {
-
-    const card = createNameCard();
-
-    const result = await liff.shareTargetPicker([
-      card
-    ]);
-
-    if (result) {
-      alert("แชร์นามบัตรเรียบร้อยแล้ว 🎉");
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "แชร์ไม่สำเร็จ\n" +
-      (error.message || error)
-    );
-
-  }
-
-}
-
-  // ==================================================
-  // ส่งข้อความหา AI
-  // ==================================================
-
-  async function talkToAI() {
-
-    if (!liff.isInClient()) {
-
-      alert(
-        "กรุณาเปิด LIFF ผ่าน LINE เพื่อใช้ Chatbot"
-      );
-
-      return;
-
-    }
-
+  async function copyNameCardLink() {
 
     try {
 
-      await liff.sendMessages([
+      await navigator.clipboard.writeText(
+        NAME_CARD_URL
+      );
 
-        {
-          type: "text",
-          text: "สวัสดี AI 👋 แนะนำตัวหน่อย"
-        }
-
-      ]);
-
-
-      alert("ส่งข้อความหา AI แล้ว 🤖");
-
-
-      // ปิด LIFF กลับไปดูหน้า Chat
-      setTimeout(function() {
-
-        liff.closeWindow();
-
-      }, 700);
+      alert(
+        "คัดลอกลิงก์นามบัตรแล้ว 🔗\n" +
+        "สามารถนำไปส่งให้เพื่อนได้เลย"
+      );
 
 
     } catch (error) {
 
-      console.error(error);
+      // สำรองกรณี Clipboard API ใช้ไม่ได้
+
+      const input =
+        document.createElement("textarea");
+
+      input.value = NAME_CARD_URL;
+
+      document.body.appendChild(input);
+
+      input.select();
+
+      document.execCommand("copy");
+
+      document.body.removeChild(input);
 
       alert(
-        "ส่งข้อความไม่สำเร็จ\n" +
-        error.message
+        "คัดลอกลิงก์นามบัตรแล้ว 🔗"
       );
 
     }
@@ -598,10 +538,9 @@ async function shareNameCard() {
   }
 
 
-
-  // ==================================================
-  // โหลด Profile ใหม่
-  // ==================================================
+  // ========================================
+  // โหลดข้อมูลใหม่
+  // ========================================
 
   async function reloadProfile() {
 
@@ -609,9 +548,11 @@ async function shareNameCard() {
 
       await loadProfile();
 
-      alert("โหลดข้อมูลเรียบร้อยแล้ว");
+      alert("โหลดข้อมูลเรียบร้อยแล้ว 🔄");
 
     } catch (error) {
+
+      console.error(error);
 
       alert("โหลดข้อมูลไม่สำเร็จ");
 
@@ -620,10 +561,9 @@ async function shareNameCard() {
   }
 
 
-
-  // ==================================================
-  // CLOSE
-  // ==================================================
+  // ========================================
+  // ปิด LIFF
+  // ========================================
 
   function closeLiff() {
 
@@ -633,17 +573,12 @@ async function shareNameCard() {
 
     } else {
 
-      alert("กรุณาเปิดผ่าน LINE");
+      window.close();
 
     }
 
   }
 
-
-
-  // ==================================================
-  // RUN
-  // ==================================================
 
   main();
 
